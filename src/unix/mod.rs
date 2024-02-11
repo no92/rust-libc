@@ -278,7 +278,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_os = "nto",
         target_os = "qnx",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "managarm"
     )))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
@@ -614,6 +615,9 @@ cfg_if! {
         #[link(name = "m")]
         #[link(name = "bsd")]
         #[link(name = "pthread")]
+        extern "C" {}
+    } else if #[cfg(target_env = "mlibc")] {
+        #[link(name = "c")]
         extern "C" {}
     } else {
         #[link(name = "c")]
@@ -2163,6 +2167,7 @@ cfg_if! {
         target_os = "cygwin",
         target_os = "aix",
         target_os = "l4re",
+        target_os = "managarm"
     )))] {
         extern "C" {
             #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
@@ -2233,7 +2238,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_env = "uclibc", target_os = "nto")))] {
+    if #[cfg(not(any(
+        target_env = "uclibc",
+        target_os = "nto",
+        target_env = "mlibc"
+    )))] {
         extern "C" {
             pub fn open_wmemstream(ptr: *mut *mut wchar_t, sizeloc: *mut size_t) -> *mut FILE;
         }
@@ -2361,7 +2370,8 @@ cfg_if! {
     } else if #[cfg(not(any(
         target_os = "solaris",
         target_os = "illumos",
-        target_os = "nto"
+        target_os = "nto",
+        target_os = "managarm"
     )))] {
         extern "C" {
             #[cfg(not(target_os = "l4re"))]
@@ -2482,7 +2492,8 @@ cfg_if! {
         target_os = "linux",
         target_os = "l4re",
         target_os = "android",
-        target_os = "emscripten"
+        target_os = "emscripten",
+        target_os = "managarm"
     ))] {
         mod linux_like;
         pub use self::linux_like::*;

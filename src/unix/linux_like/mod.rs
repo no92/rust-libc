@@ -110,7 +110,12 @@ s! {
         pub tm_zone: *const c_char,
     }
 
-    #[cfg(not(any(target_env = "musl", target_os = "emscripten", target_env = "ohos")))]
+    #[cfg(not(any(
+        target_env = "musl",
+        target_os = "emscripten",
+        target_env = "ohos",
+        target_os = "managarm"
+    )))]
     pub struct sched_param {
         pub sched_priority: c_int,
     }
@@ -236,7 +241,11 @@ s! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
+    if #[cfg(not(any(
+        target_os = "emscripten",
+        target_os = "l4re",
+        target_os = "managarm"
+    )))] {
         s! {
             pub struct file_clone_range {
                 pub src_fd: crate::__s64,
@@ -265,6 +274,7 @@ cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
         target_os = "android",
+        target_os = "managarm",
         all(target_env = "musl", musl_v1_2_3)
     ))] {
         s! {
@@ -656,7 +666,11 @@ pub const MADV_COLD: c_int = 20;
 pub const MADV_PAGEOUT: c_int = 21;
 pub const MADV_HWPOISON: c_int = 100;
 cfg_if! {
-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
+    if #[cfg(not(any(
+        target_os = "emscripten",
+        target_os = "l4re",
+        target_os = "managarm"
+    )))] {
         pub const MADV_POPULATE_READ: c_int = 22;
         pub const MADV_POPULATE_WRITE: c_int = 23;
         pub const MADV_DONTNEED_LOCKED: c_int = 24;
@@ -1104,7 +1118,7 @@ pub const MNT_EXPIRE: c_int = 0x4;
 pub const UMOUNT_NOFOLLOW: c_int = 0x8;
 
 cfg_if! {
-    if #[cfg(not(target_os = "l4re"))] {
+    if #[cfg(not(any(target_os = "l4re", target_os = "managarm")))] {
         pub const Q_GETFMT: c_int = 0x800004;
         pub const Q_GETINFO: c_int = 0x800005;
         pub const Q_SETINFO: c_int = 0x800006;
@@ -1482,7 +1496,11 @@ pub const ARPHRD_VOID: u16 = 0xFFFF;
 pub const ARPHRD_NONE: u16 = 0xFFFE;
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
+    if #[cfg(not(any(
+        target_os = "emscripten",
+        target_os = "l4re",
+        target_os = "managarm"
+    )))] {
         // linux/if_tun.h
         /* TUNSETIFF ifr flags */
         pub const IFF_TUN: c_int = 0x0001;
@@ -1687,7 +1705,8 @@ cfg_if! {
         target_env = "gnu",
         target_os = "android",
         all(target_env = "musl", musl_v1_2_3),
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "managarm"
     ))] {
         pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
         pub const AT_STATX_SYNC_AS_STAT: c_int = 0x0000;
@@ -2270,6 +2289,9 @@ cfg_if! {
     } else if #[cfg(target_os = "android")] {
         mod android;
         pub use self::android::*;
+    } else if #[cfg(target_os = "managarm")] {
+        mod managarm;
+        pub use self::managarm::*;
     } else {
         // Unknown target_os
     }

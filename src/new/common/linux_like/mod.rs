@@ -4,6 +4,7 @@
     target_os = "android",
     target_os = "emscripten",
     target_os = "l4re",
-    target_os = "linux"
+    target_os = "linux",
+    target_os = "managarm"
 ))]
 pub(crate) mod pthread;
