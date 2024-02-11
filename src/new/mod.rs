@@ -167,6 +167,9 @@ cfg_if! {
     } else if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub(crate) use uclibc::*;
+    } else if #[cfg(target_env = "mlibc")] {
+        mod mlibc;
+        pub(crate) use mlibc::*;
     }
 }
 
@@ -249,7 +252,8 @@ cfg_if! {
             target_os = "android",
             target_os = "emscripten",
             target_os = "l4re",
-            target_os = "linux"
+            target_os = "linux",
+            target_os = "managarm"
         ))]
         pub use pthread::*;
         pub use unistd::*;
